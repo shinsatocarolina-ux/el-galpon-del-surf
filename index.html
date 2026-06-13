@@ -3,174 +3,300 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>El Galpón del Surf - Shop Pro</title>
+    <title>El Galpón del Surf - Shop</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #070f1e;
-            --bg-medium: #0f1c32;
-            --ocean-cyan: #00f0ff;
-            --ocean-blue: #0072ff;
-            --foam: #f0f4f8;
+            --ocean-blue-dark: #072146;
+            --ocean-blue-light: #0c4385;
+            --card-blue: rgba(255, 255, 255, 0.08);
+            --card-border: rgba(255, 255, 255, 0.15);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--foam); overflow-x: hidden; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #051c38;
+            color: #ffffff; 
+            overflow-x: hidden; 
+            position: relative;
+            min-h: 100vh;
+        }
         .font-display { font-family: 'Bebas Neue', sans-serif; }
         
-        /* Fondo de ondas Neon */
-        .neon-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at 50% 50%, #102542 0%, #070f1e 100%); }
+        /* CONTENEDOR Y ANIMACIÓN DE OLAS EN EL FONDO */
+        .ocean-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, #072146 0%, #0c4385 40%, #0a3161 70%, #051c38 100%);
+            z-index: -1;
+            overflow: hidden;
+        }
         
-        .nav-blur { background: rgba(7, 15, 30, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0, 240, 255, 0.15); }
-        .hero-title { background: linear-gradient(135deg, #fff 0%, var(--ocean-cyan) 50%, var(--ocean-blue) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 300px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,0 C150,90 350,10 500,60 C650,110 850,30 1000,70 C1150,110 1350,30 1500,60 L1500,120 L0,120 Z" fill="rgba(255,255,255,0.03)"/></svg>') repeat-x;
+            background-size: 50% 100%;
+            transform: translate3d(0, 0, 0);
+        }
         
-        .product-card { background: linear-gradient(145deg, #0f1c32, #070f1e); border: 1px solid rgba(0, 240, 255, 0.1); transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); }
-        .product-card:hover { transform: translateY(-8px); border-color: var(--ocean-cyan); box-shadow: 0 15px 30px rgba(0, 240, 255, 0.15); }
+        .wave-one {
+            animation: waveMotion 25s cubic-bezier(0.55, 0.5, 0.45, 0.5) infinite;
+            height: 400px;
+            opacity: 0.6;
+        }
         
-        .btn-cyan { background: linear-gradient(135deg, var(--ocean-cyan), var(--ocean-blue)); color: #070f1e; font-weight: 700; padding: 14px 32px; border-radius: 8px; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px; letter-spacing: 0.5px; }
-        .btn-cyan:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 240, 255, 0.4); }
+        .wave-two {
+            animation: waveMotionReverse 35s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
+            height: 320px;
+            opacity: 0.4;
+            bottom: 10px;
+        }
         
-        .btn-whatsapp { background: #25D366; color: white; font-weight: 700; padding: 14px 32px; border-radius: 8px; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px; }
-        .btn-whatsapp:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(37, 211, 102, 0.3); }
-        
-        /* Contenedor de fotos frente y espalda */
-        .image-container { position: relative; overflow: hidden; height: 320px; border-radius: 12px; background: #0b1526; }
-        .img-back { position: absolute; top: 0; left: 0; opacity: 0; transition: opacity 0.4s ease; width: 100%; height: 100%; object-fit: cover; }
-        .image-container:hover .img-back { opacity: 1; }
+        .wave-three {
+            animation: waveMotion 45s linear infinite;
+            height: 250px;
+            opacity: 0.2;
+            bottom: 20px;
+        }
 
-        /* Icono flotante de WhatsApp */
+        @keyframes waveMotion {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        @keyframes waveMotionReverse {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0); }
+        }
+        
+        .nav-blur { background: rgba(7, 33, 70, 0.8); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.1); }
+        
+        /* Tarjetas Originales */
+        .custom-card { 
+            background: rgba(7, 33, 70, 0.5); 
+            backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255, 255, 255, 0.12); 
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        .custom-card:hover {
+            background: rgba(12, 67, 133, 0.6);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-4px);
+        }
+
+        /* Botones de Filtro */
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            padding: 8px 24px;
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .filter-btn.active, .filter-btn:hover {
+            background: #4ade80; 
+            color: #072146;
+            border-color: #4ade80;
+            font-weight: 600;
+        }
+
+        /* Botón Añadir original */
+        .btn-add {
+            background: #2dd4bf;
+            color: #072146;
+            font-weight: 600;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .btn-add:hover {
+            background: #22d3ee;
+            transform: scale(1.03);
+        }
+
         .whatsapp-fixed { position: fixed; bottom: 24px; right: 24px; background: #25D366; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(37,211,102,0.4); z-index: 50; transition: transform 0.3s; }
         .whatsapp-fixed:hover { transform: scale(1.1); }
     </style>
 </head>
 <body>
-    <div class="neon-bg"></div>
 
-    <!-- Navegación -->
+    <!-- FONDO CON DINÁMICA DE OLAS -->
+    <div class="ocean-background">
+        <div class="wave wave-one"></div>
+        <div class="wave wave-two"></div>
+        <div class="wave wave-three"></div>
+    </div>
+
+    <!-- Navegación Original -->
     <nav class="nav-blur fixed top-0 left-0 right-0 z-40">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-            <!-- TOCANDO 3 VECES ACÁ SE ABRE TU PANEL OCULTO -->
-            <span onclick="triggerAdmin()" class="font-display text-2xl md:text-3xl tracking-widest text-white cursor-pointer select-none">EL GALPÓN <span class="text-cyan-400">DEL SURF</span></span>
-            <div class="hidden md:flex items-center gap-8 font-medium tracking-wider text-sm">
-                <a href="#tablas" class="hover:text-cyan-400 transition">TABLAS</a>
-                <a href="#trajes" class="hover:text-cyan-400 transition">TRAJES</a>
-                <a href="#accesorios" class="hover:text-cyan-400 transition">ACCESORIOS</a>
+            <div onclick="triggerAdmin()" class="flex items-center gap-2 cursor-pointer select-none">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18M3 6h18M3 18h18"/></svg>
+                <span class="font-display text-2xl md:text-3xl tracking-widest text-white">EL GALPÓN DEL SURF</span>
+            </div>
+            <div class="hidden md:flex items-center gap-8 font-medium tracking-wider text-xs uppercase">
+                <a href="#tablas" class="hover:text-cyan-300 transition">TABLAS</a>
+                <a href="#trajes" class="hover:text-cyan-300 transition">TRAJES</a>
+                <a href="#accesorios" class="hover:text-cyan-300 transition">ACCESORIOS</a>
+                <a href="#contacto" class="hover:text-cyan-300 transition">CONTACTO</a>
+            </div>
+            <div class="cursor-pointer text-white/70 hover:text-white" onclick="triggerAdmin()">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Corregido -->
-    <section class="min-h-screen flex items-center pt-20 relative">
-        <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center w-full">
-            <div>
-                <span class="text-cyan-400 font-bold tracking-widest uppercase text-sm block mb-3">BIENVENIDO A NUESTRO ESPACIO</span>
-                <h1 class="font-display hero-title text-6xl sm:text-7xl lg:text-9xl leading-none mb-6">EL GALPÓN DEL SURF</h1>
-                <p class="text-lg text-slate-400 mb-8 max-w-lg leading-relaxed">
-                    Surf Shop Pro. Equipamiento de alta performance seleccionado para surfistas exigentes. Explora el catálogo interactivo pasando el mouse para ver detalles de frente y espalda.
-                </p>
-                <div class="flex flex-wrap gap-4">
-                    <a href="#tablas" class="btn-cyan">EXPLORAR TIENDA</a>
-                    <a href="https://wa.me/5492257525899" target="_blank" class="btn-whatsapp">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.4.011 12.017.011c3.205.001 6.216 1.25 8.481 3.52 2.265 2.27 3.507 5.289 3.504 8.494-.007 6.661-5.347 12-11.962 12-2.015-.001-4.003-.507-5.77-1.472L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.742.002-2.602-.101-5.05-1.937-6.89C17.506 2.124 15.04 1.105 12.01 1.105c-5.44 0-9.863 4.37-9.866 9.743-.001 1.902.501 3.757 1.454 5.378L2.594 21.5l5.053-1.346z"/></svg>
-                        WHATSAPP DIRECTO
-                    </a>
+    <div class="h-24"></div>
+
+    <!-- SECCIÓN TABLAS -->
+    <section id="tablas" class="py-16 max-w-7xl mx-auto px-6 text-center">
+        <h1 class="font-display text-5xl md:text-6xl tracking-wide mb-3">TABLAS DE SURF</h1>
+        <p class="text-slate-200 max-w-2xl mx-auto mb-8 text-sm md:text-base">Encuentra la tabla perfecta para tu nivel. Desde principiantes hasta profesionales.</p>
+        
+        <div class="flex flex-wrap justify-center gap-3 mb-12">
+            <button class="filter-btn active" onclick="filterTablas('Todas')">Todas</button>
+            <button class="filter-btn" onclick="filterTablas('Profesionales')">Profesionales</button>
+            <button class="filter-btn" onclick="filterTablas('Junior')">Junior</button>
+            <button class="filter-btn" onclick="filterTablas('Principiantes')">Principiantes</button>
+        </div>
+
+        <div id="boardsGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 text-left"></div>
+    </section>
+
+    <!-- SECCIÓN TRAJES -->
+    <section id="trajes" class="py-16 max-w-7xl mx-auto px-6 text-center">
+        <h2 class="font-display text-5xl md:text-6xl tracking-wide mb-3">TRAJES DE NEOPRENO</h2>
+        <p class="text-slate-200 max-w-2xl mx-auto mb-12 text-sm md:text-base">Tecnología de última generación para mantener el calor y la flexibilidad en cada ola.</p>
+        
+        <div id="wetsuitsGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 text-left"></div>
+    </section>
+
+    <!-- SECCIÓN ACCESORIOS -->
+    <section id="accesorios" class="py-16 max-w-7xl mx-auto px-6 text-center">
+        <h2 class="font-display text-5xl md:text-6xl tracking-wide mb-3">ACCESORIOS</h2>
+        <p class="text-slate-200 max-w-2xl mx-auto mb-12 text-sm md:text-base">Todo lo que necesitas para complementar tu experiencia en el agua.</p>
+        
+        <div id="accessoriesGrid" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left"></div>
+    </section>
+
+    <!-- BLOQUES INFORMATIVOS -->
+    <section class="py-20 max-w-7xl mx-auto px-6">
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="custom-card p-8 text-center flex flex-col items-center">
+                <div class="w-16 h-16 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center mb-6">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                </div>
+                <h3 class="font-display text-2xl tracking-wider mb-2">ENVÍO GRATIS</h3>
+                <p class="text-slate-200 text-sm leading-relaxed">En pedidos superiores a 150 EUR. Entrega en 24-48 horas.</p>
+            </div>
+            <div class="custom-card p-8 text-center flex flex-col items-center">
+                <div class="w-16 h-16 rounded-full bg-orange-500/20 text-orange-400 flex items-center justify-center mb-6">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                </div>
+                <h3 class="font-display text-2xl tracking-wider mb-2">GARANTÍA 2 AÑOS</h3>
+                <p class="text-slate-200 text-sm leading-relaxed">Todos nuestros productos incluyen garantía extendida.</p>
+            </div>
+            <div class="custom-card p-8 text-center flex flex-col items-center">
+                <div class="w-16 h-16 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center mb-6">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                </div>
+                <h3 class="font-display text-2xl tracking-wider mb-2">SOPORTE EXPERTO</h3>
+                <p class="text-slate-200 text-sm leading-relaxed">Asesoramiento personalizado de surfistas profesionales.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN CONTACTO -->
+    <section id="contacto" class="py-20 max-w-7xl mx-auto px-6 border-t border-white/10">
+        <div class="max-w-3xl">
+            <h2 class="font-display text-5xl tracking-wide mb-4">CONTACTANOS</h2>
+            <p class="text-slate-200 mb-10 text-base">¿Tienes dudas? ¿Necesitas asesoramiento? Nuestro equipo de expertos está listo para ayudarte.</p>
+            
+            <div class="space-y-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-white/50 uppercase tracking-wider">Tienda Principal</h4>
+                        <p class="text-white font-medium">Playa de Las Canteras, Las Palmas</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-white/50 uppercase tracking-wider">Teléfono</h4>
+                        <p class="text-white font-medium">+34 928 456 789</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-white/50 uppercase tracking-wider">Horario</h4>
+                        <p class="text-white font-medium">Lun - Sáb: 10:00 - 20:00</p>
+                    </div>
                 </div>
             </div>
-            
-            <!-- Animación de la tabla de Surf que flota -->
-            <div class="relative hidden lg:flex justify-center items-center">
-                <div class="absolute w-72 h-72 bg-cyan-500/10 blur-3xl rounded-full animate-pulse"></div>
-                <svg class="w-full h-auto max-w-xs transform hover:scale-105 transition duration-700 filter drop-shadow-[0_10px_30px_rgba(0,240,255,0.2)]" style="animation: float 4s ease-in-out infinite;" viewBox="0 0 200 500">
-                    <path d="M100,20 C140,120 160,240 150,380 C145,430 125,470 100,480 C75,470 55,430 50,380 C40,240 60,120 100,20 Z" fill="url(#neonBoard)" stroke="#00f0ff" stroke-width="2"/>
-                    <defs>
-                        <linearGradient id="neonBoard" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#070f1e"/><stop offset="50%" stop-color="#0f1c32"/><stop offset="100%" stop-color="#0072ff"/>
-                        </linearGradient>
-                    </defs>
-                </svg>
-            </div>
         </div>
     </section>
 
-    <!-- Secciones Reconstruidas Perfectas -->
-    <section class="py-24 border-t border-b border-slate-800/50 bg-[#0a1424]/40">
-        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-12">
-            <div class="text-center md:text-left">
-                <div class="text-cyan-400 font-display text-3xl mb-2">ENVÍOS A TODO EL PAÍS</div>
-                <p class="text-slate-400 text-sm leading-relaxed">Comprá desde cualquier punto del país. Tu equipamiento viaja asegurado y embalado de forma profesional.</p>
-            </div>
-            <div class="text-center md:text-left">
-                <div class="text-cyan-400 font-display text-3xl mb-2">CLASES GRUPALES E INDIVIDUALES</div>
-                <p class="text-slate-400 text-sm leading-relaxed">Aprendé con los mejores. Coachings personalizados de iniciación, nivel intermedio y perfeccionamiento técnico.</p>
-            </div>
-            <div class="text-center md:text-left">
-                <div class="text-cyan-400 font-display text-3xl mb-2">ASESORAMIENTO TÉCNICO PRO</div>
-                <p class="text-slate-400 text-sm leading-relaxed">¿No sabés qué medida elegir? Te guiamos vía WhatsApp para encontrar tu volumen y litraje ideal.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contenedores del Catálogo -->
-    <section id="tablas" class="py-24 max-w-7xl mx-auto px-6">
-        <h2 class="font-display text-4xl lg:text-5xl mb-12 tracking-widest text-white border-l-4 border-cyan-400 pl-4">TABLAS DE SURF</h2>
-        <div id="boardsGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
-    </section>
-
-    <section id="trajes" class="py-24 max-w-7xl mx-auto px-6">
-        <h2 class="font-display text-4xl lg:text-5xl mb-12 tracking-widest text-white border-l-4 border-cyan-400 pl-4">TRAJES DE NEOPRENE</h2>
-        <div id="wetsuitsGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
-    </section>
-
-    <section id="accesorios" class="py-24 max-w-7xl mx-auto px-6">
-        <h2 class="font-display text-4xl lg:text-5xl mb-12 tracking-widest text-white border-l-4 border-cyan-400 pl-4">ACCESORIOS</h2>
-        <div id="accessoriesGrid" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
-    </section>
-
-    <!-- Botón Fijo Flotante de WhatsApp -->
+    <!-- WhatsApp Flotante -->
     <a href="https://wa.me/5492257525899" target="_blank" class="whatsapp-fixed">
         <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.4.011 12.017.011c3.205.001 6.216 1.25 8.481 3.52 2.265 2.27 3.507 5.289 3.504 8.494-.007 6.661-5.347 12-11.962 12-2.015-.001-4.003-.507-5.77-1.472L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.742.002-2.602-.101-5.05-1.937-6.89C17.506 2.124 15.04 1.105 12.01 1.105c-5.44 0-9.863 4.37-9.866 9.743-.001 1.902.501 3.757 1.454 5.378L2.594 21.5l5.053-1.346z"/></svg>
     </a>
 
-    <!-- PANEL DE CONTROL SEGURO (MODAL) -->
-    <div id="adminModal" class="fixed inset-0 bg-black/95 backdrop-filter blur-md z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-[#0f1c32] p-8 rounded-2xl max-w-lg w-full border border-cyan-400 max-h-[90vh] overflow-y-auto shadow-2xl">
+    <!-- PANEL DE ADMINISTRACIÓN -->
+    <div id="adminModal" class="fixed inset-0 bg-black/90 backdrop-filter blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-[#0c4385] p-8 rounded-2xl max-w-lg w-full border border-white/20 max-h-[90vh] overflow-y-auto shadow-2xl text-slate-900">
             <div class="flex justify-between items-center mb-6">
-                <h3 class="font-display text-3xl text-cyan-400 tracking-wider">PANEL DE CARGA PRIVADO</h3>
-                <button onclick="closeAdmin()" class="text-white hover:text-cyan-400 text-3xl">&times;</button>
+                <h3 class="font-display text-3xl text-white tracking-wider">Cargar Producto</h3>
+                <button onclick="closeAdmin()" class="text-white hover:text-cyan-300 text-3xl">&times;</button>
             </div>
-            <form id="productForm" class="space-y-4 text-slate-900">
+            <form id="productForm" class="space-y-4">
                 <div>
-                    <label class="block text-slate-300 text-xs font-semibold uppercase tracking-wider mb-1">Categoría del Ítems</label>
+                    <label class="block text-white text-xs font-semibold uppercase mb-1">Categoría</label>
                     <select id="pCategory" class="w-full p-3 rounded bg-slate-100 font-medium">
-                        <option value="tabla">Tabla de Surf</option>
+                        <option value="tabla-Profesionales">Tabla - Profesional</option>
+                        <option value="tabla-Junior">Tabla - Junior</option>
+                        <option value="tabla-Principiantes">Tabla - Principiante</option>
                         <option value="traje">Traje de Neoprene</option>
                         <option value="accesorio">Accesorio</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-slate-300 text-xs font-semibold uppercase tracking-wider mb-1">Nombre Comercial</label>
+                    <label class="block text-white text-xs font-semibold uppercase mb-1">Nombre Comercial</label>
                     <input type="text" id="pName" required class="w-full p-3 rounded bg-slate-100">
                 </div>
                 <div>
-                    <label class="block text-slate-300 text-xs font-semibold uppercase tracking-wider mb-1">Precio Estimado ($)</label>
+                    <label class="block text-white text-xs font-semibold uppercase mb-1">Precio ($ / EUR)</label>
                     <input type="number" id="pPrice" required class="w-full p-3 rounded bg-slate-100">
                 </div>
                 <div>
-                    <label class="block text-slate-300 text-xs font-semibold uppercase tracking-wider mb-1">Especificaciones / Detalles</label>
-                    <input type="text" id="pDesc" placeholder="Ej: Medidas, Litros, Espesor" class="w-full p-3 rounded bg-slate-100">
+                    <label class="block text-white text-xs font-semibold uppercase mb-1">Descripción / Espesor / Litros</label>
+                    <input type="text" id="pDesc" class="w-full p-3 rounded bg-slate-100">
                 </div>
                 <div>
-                    <label class="block text-slate-300 text-xs font-semibold uppercase tracking-wider mb-1">URL Imagen de FRENTE</label>
-                    <input type="url" id="pImgFront" placeholder="Pegá el link de ImgBB o Postimages aquí" required class="w-full p-3 rounded bg-slate-100 text-xs">
+                    <label class="block text-white text-xs font-semibold uppercase mb-1">URL Imagen (Link de foto)</label>
+                    <input type="url" id="pImgFront" required class="w-full p-3 rounded bg-slate-100 text-xs" placeholder="https://...">
                 </div>
-                <div>
-                    <label class="block text-slate-300 text-xs font-semibold uppercase tracking-wider mb-1">URL Imagen de ESPALDA (Opcional)</label>
-                    <input type="url" id="pImgBack" placeholder="Dejalo vacío si no tiene foto de atrás" class="w-full p-3 rounded bg-slate-100 text-xs">
-                </div>
-                <button type="submit" class="w-full btn-cyan justify-center font-bold text-base mt-6 py-4">PUBLICAR EN CATÁLOGO</button>
+                <button type="submit" class="w-full btn-add font-bold text-base mt-4 py-3 uppercase">Publicar Ítem</button>
             </form>
         </div>
     </div>
@@ -178,10 +304,20 @@
     <script>
         const SEV_PASS = "Galpon2026"; 
         
-        let localProducts = JSON.parse(localStorage.getItem('ocean_products')) || [
-            { id: 1, category: "tabla", name: "DHD Performance Board 6'1", price: 450, desc: "Medidas: 6'1 x 19.5 x 2.4 - 31 Litros.", front: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=600", back: "https://images.unsplash.com/photo-1531722569936-825d3dd91b15?w=600" }
+        let localProducts = JSON.parse(localStorage.getItem('galpon_products')) || [
+            { id: 1, category: "tabla-Profesionales", name: "Al Merrick Pro 6'0", price: 499, desc: "Tabla de alta performance para olas exigentes.", tag: "PRO" },
+            { id: 2, category: "tabla-Profesionales", name: "DHD DNA Performance", price: 549, desc: "Modelo de competición excelente flex.", tag: "PRO" },
+            { id: 3, category: "tabla-Junior", name: "Lost Driver Junior", price: 399, desc: "Adaptada para los más jóvenes que progresan.", tag: "JUNIOR" },
+            { id: 4, category: "traje", name: "PRO STEAMER 4/3MM", price: 329, desc: "Traje profesional de alta gama.", tag: "4/3mm" },
+            { id: 5, category: "traje", name: "ELITE CHEST ZIP 3/2MM", price: 279, desc: "Flexibilidad máxima con chest zip.", tag: "3/2mm" },
+            { id: 6, category: "traje", name: "JUNIOR FULLSUIT 3/2MM", price: 149, desc: "Traje completo para jóvenes.", tag: "3/2mm" },
+            { id: 7, category: "accesorio", name: "Quilla Set FCS II", price: 89, desc: "" },
+            { id: 8, category: "accesorio", name: "Leash 8 Pro", price: 49, desc: "" },
+            { id: 9, category: "accesorio", name: "Traction Pad", price: 45, desc: "" },
+            { id: 10, category: "accesorio", name: "Board Bag Day", price: 69, desc: "" }
         ];
 
+        let currentTablasFilter = "Todas";
         let adminClicks = 0;
 
         function renderAll() {
@@ -192,49 +328,95 @@
             bGrid.innerHTML = ""; wGrid.innerHTML = ""; aGrid.innerHTML = "";
 
             localProducts.forEach(p => {
-                const card = document.createElement('div');
-                card.className = "product-card rounded-2xl p-5 flex flex-col justify-between";
-                
-                let imgHTML = '';
-                if(p.front) {
-                    imgHTML = `
-                        <div class="image-container mb-4">
-                            <img src="${p.front}" class="w-full h-full object-cover rounded-xl" alt="${p.name}">
-                            ${p.back ? `<img src="${p.back}" class="img-back" alt="${p.name} trasera">` : ''}
+                if(p.category.startsWith('tabla')) {
+                    const subCat = p.category.split('-')[1];
+                    if (currentTablasFilter !== "Todas" && currentTablasFilter !== subCat) return;
+
+                    const card = document.createElement('div');
+                    card.className = "custom-card p-6 flex flex-col justify-between relative";
+                    card.innerHTML = `
+                        <div>
+                            ${p.tag ? `<span class="absolute top-4 left-4 bg-yellow-400 text-slate-900 text-[10px] font-extrabold px-2 py-0.5 rounded-full">${p.tag}</span>` : ''}
+                            <div class="h-40 flex items-center justify-center my-4 text-white/20">
+                                ${p.front ? `<img src="${p.front}" class="h-full object-contain rounded-lg" />` : `
+                                <svg class="w-20 h-20" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path d="M12 2C14 6 16 12 15 18 C14.5 21 12.5 22 12 22 C11.5 22 9.5 21 9 18 C8 12 10 6 12 2 Z"/></svg>
+                                `}
+                            </div>
+                            <h3 class="font-display text-2xl tracking-wider text-white mb-1 uppercase">${p.name}</h3>
+                            <p class="text-xs text-slate-200 leading-snug mb-4">${p.desc || ''}</p>
+                        </div>
+                        <div class="flex justify-between items-center mt-4 pt-4 border-t border-white/10">
+                            <span class="font-semibold text-lg text-white">${p.price} EUR</span>
+                            <button onclick="sendOrder('${p.name}')" class="btn-add">Añadir</button>
                         </div>
                     `;
+                    bGrid.appendChild(card);
                 }
 
-                card.innerHTML = `
-                    <div>
-                        ${imgHTML}
-                        <h3 class="font-display text-2xl mb-1 tracking-wider text-white">${p.name}</h3>
-                        <p class="text-sm text-slate-400 mb-4">${p.desc || ''}</p>
-                    </div>
-                    <div class="flex justify-between items-center mt-auto pt-4 border-t border-slate-800/60">
-                        <span class="text-cyan-400 font-display text-2xl">$ ${p.price}</span>
-                        <a href="https://wa.me/5492257525899?text=Hola!%20Me%20interesa%20el%20siguiente%20modelo:%20${encodeURIComponent(p.name)}" target="_blank" class="bg-cyan-500/10 hover:bg-cyan-500 text-cyan-400 hover:text-black border border-cyan-500/30 font-semibold px-4 py-2 text-xs rounded-md uppercase tracking-wider transition duration-300">
-                            PEDIR INFO
-                        </a>
-                    </div>
-                `;
+                if(p.category === 'traje') {
+                    const card = document.createElement('div');
+                    card.className = "custom-card p-6 flex flex-col justify-between";
+                    card.innerHTML = `
+                        <div>
+                            <div class="h-40 flex items-center justify-center my-4 text-white/30">
+                                ${p.front ? `<img src="${p.front}" class="h-full object-contain rounded-lg" />` : `
+                                <svg class="w-20 h-20" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path d="M6 2h12v4l-2 3v13H8V9L6 6z"/></svg>
+                                `}
+                            </div>
+                            <h3 class="font-display text-2xl tracking-wider text-white mb-1 uppercase">${p.name}</h3>
+                            <p class="text-xs text-slate-200 mb-1">${p.desc || ''}</p>
+                            ${p.tag ? `<span class="text-[11px] text-cyan-400 font-medium">${p.tag}</span>` : ''}
+                        </div>
+                        <div class="flex justify-between items-center mt-6 pt-4 border-t border-white/10">
+                            <span class="font-semibold text-lg text-white">${p.price} EUR</span>
+                            <button onclick="sendOrder('${p.name}')" class="btn-add">Añadir</button>
+                        </div>
+                    `;
+                    wGrid.appendChild(card);
+                }
 
-                if(p.category === 'tabla') bGrid.appendChild(card);
-                if(p.category === 'traje') wGrid.appendChild(card);
-                if(p.category === 'accesorio') aGrid.appendChild(card);
+                if(p.category === 'accesorio') {
+                    const card = document.createElement('div');
+                    card.className = "custom-card p-5 flex flex-col justify-between";
+                    card.innerHTML = `
+                        <div>
+                            <div class="w-12 h-12 rounded-xl bg-white/5 text-cyan-400 flex items-center justify-center mb-4">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                            </div>
+                            <h3 class="font-bold text-base text-white mb-1">${p.name}</h3>
+                            <p class="font-semibold text-cyan-400 text-sm mb-4">${p.price} EUR</p>
+                        </div>
+                        <button onclick="sendOrder('${p.name}')" class="w-full bg-white/5 hover:bg-white/10 text-white rounded-lg py-2 text-xl font-bold transition">+</button>
+                    `;
+                    aGrid.appendChild(card);
+                }
             });
         }
 
-        // CONTROL EXCLUSIVO DE ENTRADA (3 CLICS EN EL TÍTULO)
+        function filterTablas(category) {
+            currentTablasFilter = category;
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => {
+                if(btn.innerText.trim() === category) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+            renderAll();
+        }
+
+        function sendOrder(itemName) {
+            const message = `Hola! Me interesa agregar a mi pedido el siguiente artículo: ${itemName}`;
+            window.open(`https://wa.me/5492257525899?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
         function triggerAdmin() {
             adminClicks++;
             if (adminClicks >= 3) {
                 adminClicks = 0;
-                const pass = prompt("Ingresá la clave de Administradora de El Galpón del Surf:");
+                const pass = prompt("Clave privada para El Galpón del Surf:");
                 if (pass === SEV_PASS) {
                     document.getElementById('adminModal').classList.remove('hidden');
                 } else if (pass !== null) {
-                    alert("Acceso denegado. Clave inválida.");
+                    alert("Acceso incorrecto.");
                 }
             }
         }
@@ -243,25 +425,27 @@
 
         document.getElementById('productForm').addEventListener('submit', (e) => {
             e.preventDefault();
+            const catValue = document.getElementById('pCategory').value;
+            let finalTag = "";
+            if(catValue.includes('Profesionales')) finalTag = "PRO";
+            if(catValue.includes('Junior')) finalTag = "JUNIOR";
+            if(catValue.includes('Principiantes')) finalTag = "BEGINNER";
+
             const newP = {
                 id: Date.now(),
-                category: document.getElementById('pCategory').value,
+                category: catValue,
                 name: document.getElementById('pName').value,
                 price: document.getElementById('pPrice').value,
                 desc: document.getElementById('pDesc').value,
                 front: document.getElementById('pImgFront').value,
-                back: document.getElementById('pImgBack').value
+                tag: finalTag
             };
             localProducts.push(newP);
-            localStorage.setItem('ocean_products', JSON.stringify(localProducts));
+            localStorage.setItem('galpon_products', JSON.stringify(localProducts));
             renderAll();
             closeAdmin();
             document.getElementById('productForm').reset();
         });
-
-        const style = document.createElement('style');
-        style.innerHTML = `@keyframes float { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-15px) rotate(2deg); } }`;
-        document.head.appendChild(style);
 
         document.addEventListener('DOMContentLoaded', renderAll);
     </script>
