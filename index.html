@@ -41,15 +41,16 @@
             font-family: 'Bebas Neue', sans-serif;
         }
 
-        /* Contenedor del Video de Fondo */
+        /* ----- VIDEO DE FONDO CORREGIDO Y SEGURO ----- */
         .video-bg-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
+            z-index: -2; /* Lo tiramos bien al fondo para que no tape nada */
             overflow: hidden;
+            background: var(--bg-dark); /* Si el video falla, queda el fondo oscuro original */
         }
 
         .video-bg-container video {
@@ -58,15 +59,15 @@
             object-fit: cover;
         }
 
-        /* Capa oscura sobre el video para que resalte el texto */
         .video-overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(180deg, rgba(10, 22, 40, 0.5) 0%, rgba(10, 22, 40, 0.85) 100%);
+            background: rgba(10, 22, 40, 0.5); /* Capa sutil para que el texto sea legible */
         }
+        /* ------------------------------------------- */
 
         .bubbles {
             position: fixed;
@@ -103,7 +104,7 @@
         .nav-link:hover::after { width: 100%; }
 
         .hero-gradient {
-            background: linear-gradient(135deg, rgba(10, 22, 40, 0.8) 0%, rgba(12, 42, 74, 0.6) 100%);
+            background: linear-gradient(135deg, rgba(10, 22, 40, 0.4) 0%, rgba(12, 42, 74, 0.2) 100%);
         }
 
         .hero-title {
@@ -254,10 +255,11 @@
     </style>
 </head>
 <body>
+
+    <!-- Contenedor del video de fondo -->
     <div class="video-bg-container">
         <video autoplay loop muted playsinline>
             <source src="31517-387662255_medium.mp4" type="video/mp4">
-            Tu navegador no soporta videos como fondo.
         </video>
         <div class="video-overlay"></div>
     </div>
@@ -318,7 +320,7 @@
         </div>
     </section>
 
-    <section class="py-20 relative bg-[#0a1628]/80 backdrop-blur-sm">
+    <section class="py-20 relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid md:grid-cols-3 gap-8">
                 <div class="reveal p-8 rounded-2xl bg-[#122a4a]/50 border border-[#00b4d8]/20 text-center">
@@ -337,7 +339,7 @@
         </div>
     </section>
 
-    <section id="tablas" class="py-20 bg-[#0a1628]/90">
+    <section id="tablas" class="py-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16 reveal">
                 <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl mb-4">TABLAS DE SURF</h2>
@@ -346,7 +348,7 @@
         </div>
     </section>
 
-    <section id="trajes" class="py-20 bg-[#0a1628]/95">
+    <section id="trajes" class="py-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16 reveal">
                 <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl mb-4">TRAJES DE NEOPRENO</h2>
@@ -355,7 +357,7 @@
         </div>
     </section>
 
-    <section id="accesorios" class="py-20 bg-[#0a1628]">
+    <section id="accesorios" class="py-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16 reveal">
                 <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl mb-4">ACCESORIOS</h2>
@@ -364,9 +366,204 @@
         </div>
     </section>
 
-    <section id="contacto" class="py-20 text-center bg-[#122a4a]/90 backdrop-blur-sm">
+    <section id="contacto" class="py-20 text-center">
         <div class="max-w-3xl mx-auto px-4">
             <h2 class="font-display text-4xl mb-6">¿TENÉS DUDAS?</h2>
             <p class="mb-8 text-[#e8f4f8]/70">Hacé clic abajo para hablar directamente con nosotros por WhatsApp. ¡Te responderemos al instante!</p>
             <a href="https://wa.me/5492257525899" target="_blank" class="btn-whatsapp text-lg px-8 py-4">
-                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.4.011 12.017.011c3.205.001 6.216 1.25 8.481 3.52 2.265 2.27 3.507 5.289 3.504 8.494-.007 6.661-5.347
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.4.011 12.017.011c3.205.001 6.216 1.25 8.481 3.52 2.265 2.27 3.507 5.289 3.504 8.494-.007 6.661-5.347 12-11.962 12-2.015-.001-4.003-.507-5.77-1.472L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.742.002-2.602-.101-5.05-1.937-6.89C17.506 2.124 15.04 1.105 12.01 1.105c-5.44 0-9.863 4.37-9.866 9.743-.001 1.902.501 3.757 1.454 5.378L2.594 21.5l5.053-1.346z"/></svg>
+                Chatear por WhatsApp
+            </a>
+        </div>
+    </section>
+
+    <div id="cartOverlay" class="cart-overlay"></div>
+    <aside id="cartSidebar" class="cart-sidebar flex flex-col justify-between p-6">
+        <div>
+            <h3 class="font-display text-2xl mb-6">Tu Carrito</h3>
+            <div id="cartItems"></div>
+        </div>
+        <div class="border-t border-[#00b4d8]/20 pt-4">
+            <div class="flex justify-between mb-4"><span class="text-[#e8f4f8]/70">Total</span><span id="cartTotal" class="font-display text-2xl text-[#f4a261]">0 USD</span></div>
+            <button id="checkoutBtn" class="btn-primary w-full justify-center">Finalizar Compra</button>
+        </div>
+    </aside>
+
+    <div id="productModal" class="modal-overlay">
+        <div class="modal-content p-6 md:p-8">
+            <button id="closeModalBtn" class="absolute top-4 right-4 text-white/70 hover:text-white p-2 text-xl font-bold">&times;</button>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        const surfboards = [
+            { 
+                id: 1, 
+                name: "Tabla Evolutiva 7'0", 
+                price: 350, 
+                imageFrente: "https://i.postimg.cc/9FTjyCp8/1781293953655.png",
+                imageDorso: "https://i.postimg.cc/3wqLLDrn/Whats-App-Image-2026-06-13-at-22-13-41-1.jpg", 
+                description: "Ideal para tus primeras olas y progresión rápida.", 
+                specs: "7'0 x 22 x 3" 
+            },
+            { 
+                id: 2, 
+                name: "Shortboard Performance", 
+                price: 420, 
+                imageFrente: "https://via.placeholder.com/300?text=FRENTE+TABLA+2", 
+                imageDorso: "https://via.placeholder.com/300?text=DORSO+TABLA+2",   
+                description: "Para surfistas intermedios que buscan maniobras.", 
+                specs: "6'1 x 19.5 x 2.4" 
+            }
+        ];
+
+        const wetsuits = [
+            { id: 3, name: "Traje Neoprene 4/3mm", price: 180, description: "Costuras termoselladas para máxima protección del frío." },
+            { id: 4, name: "Traje Neoprene 3/2mm", price: 150, description: "Súper elástico, ideal para temporadas de primavera/verano." }
+        ];
+
+        const accessories = [
+            { id: 5, name: "Leash / Invento 6'", price: 25, icon: "leash" },
+            { id: 6, name: "Parafina / Wax", price: 5, icon: "wax" }
+        ];
+
+        let cart = [];
+        
+        const boardsGrid = document.getElementById('boardsGrid');
+        const wetsuitsGrid = document.getElementById('wetsuitsGrid');
+        const accessoriesGrid = document.getElementById('accessoriesGrid');
+        const cartSidebar = document.getElementById('cartSidebar');
+        const cartOverlay = document.getElementById('cartOverlay');
+        const cartItems = document.getElementById('cartItems');
+        const cartTotal = document.getElementById('cartTotal');
+        const cartCount = document.getElementById('cartCount');
+        const productModal = document.getElementById('productModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const modalBody = document.getElementById('modalBody');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts();
+            setupScrollReveal();
+            
+            document.getElementById('cartBtn').addEventListener('click', () => { 
+                cartSidebar.classList.add('open'); 
+                cartOverlay.classList.add('open'); 
+            });
+            cartOverlay.addEventListener('click', () => { 
+                cartSidebar.classList.remove('open'); 
+                cartOverlay.classList.remove('open'); 
+            });
+            
+            closeModalBtn.addEventListener('click', closeModal);
+            productModal.addEventListener('click', (e) => { 
+                if(e.target === productModal) closeModal(); 
+            });
+        });
+
+        function renderProducts() {
+            if(boardsGrid) {
+                boardsGrid.innerHTML = surfboards.map(b => `
+                    <div class="product-card rounded-2xl p-6 group cursor-pointer" onclick="openModal(${b.id}, 'board', event)">
+                        <div class="relative w-full h-64 overflow-hidden rounded-xl mb-4 bg-slate-900">
+                            <img src="${b.imageFrente}" class="absolute inset-0 w-full h-full object-contain transition-opacity duration-500 group-hover:opacity-0" alt="${b.name} Frente">
+                            <img src="${b.imageDorso}" class="absolute inset-0 w-full h-full object-contain opacity-0 transition-opacity duration-500 group-hover:opacity-100" alt="${b.name} Dorso">
+                        </div>
+                        <h3 class="font-display text-xl mb-2">${b.name}</h3>
+                        <p class="text-sm opacity-70 mb-1">${b.description}</p>
+                        <p class="text-xs text-[#00b4d8] font-semibold mb-2">Medidas: ${b.specs}</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-[#f4a261] font-display text-xl">$${b.price}</span>
+                            <button onclick="addToCart(${b.id}, 'board', event)" class="btn-primary py-1 px-3 text-sm relative z-10">Agregar</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            if(wetsuitsGrid) {
+                wetsuitsGrid.innerHTML = wetsuits.map(w => `
+                    <div class="product-card rounded-2xl p-6 cursor-pointer" onclick="openModal(${w.id}, 'wetsuit', event)">
+                        <h3 class="font-display text-xl mb-2">${w.name}</h3>
+                        <p class="text-sm opacity-70 mb-2">${w.description}</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-[#f4a261] font-display text-xl">$${w.price}</span>
+                            <button onclick="addToCart(${w.id}, 'wetsuit', event)" class="btn-primary py-1 px-3 text-sm relative z-10">Agregar</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            if(accessoriesGrid) {
+                accessoriesGrid.innerHTML = accessories.map(a => `
+                    <div class="product-card rounded-xl p-6 cursor-pointer" onclick="openModal(${a.id}, 'accessory', event)">
+                        <h3 class="font-medium mb-1">${a.name}</h3>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-[#f4a261] font-display text-lg">$${a.price}</span>
+                            <button onclick="addToCart(${a.id}, 'accessory', event)" class="btn-primary py-1 px-2 text-sm relative z-10"> + </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function openModal(id, type, event) {
+            let item = [...surfboards, ...wetsuits, ...accessories].find(p => p.id === id);
+            if(!item) return;
+
+            let extraContent = '';
+            if(type === 'board') {
+                extraContent = `
+                    <div class="grid grid-cols-2 gap-4 my-4 bg-slate-900/60 p-4 rounded-xl">
+                        <div>
+                            <p class="text-xs opacity-50 mb-1">Vista Frente</p>
+                            <img src="${item.imageFrente}" class="w-full h-48 object-contain" alt="Frente">
+                        </div>
+                        <div>
+                            <p class="text-xs opacity-50 mb-1">Vista Dorso</p>
+                            <img src="${item.imageDorso}" class="w-full h-48 object-contain" alt="Dorso">
+                        </div>
+                    </div>
+                    <p class="text-sm text-[#00b4d8] font-semibold mb-4">Medidas Técnicas: ${item.specs}</p>
+                `;
+            }
+
+            if(modalBody) {
+                modalBody.innerHTML = `
+                    <h3 class="font-display text-3xl mb-2 text-[#00b4d8]">${item.name}</h3>
+                    <p class="text-[#e8f4f8]/80 text-base mb-4">${item.description || 'Sin descripción adicional disponible.'}</p>
+                    ${extraContent}
+                    <div class="flex justify-between items-center pt-4 border-t border-[#00b4d8]/20 mt-4">
+                        <span class="text-[#f4a261] font-display text-3xl">$${item.price} USD</span>
+                        <button onclick="addToCart(${item.id}, '${type}', event); closeModal();" class="btn-primary">Añadir al carrito</button>
+                    </div>
+                `;
+            }
+
+            if(productModal) productModal.classList.add('open');
+        }
+
+        function closeModal() {
+            if(productModal) productModal.classList.remove('open');
+        }
+
+        function addToCart(id, type, event) {
+            if(event) event.stopPropagation(); 
+            let item = [...surfboards, ...wetsuits, ...accessories].find(p => p.id === id);
+            if(item) {
+                cart.push(item);
+                if(cartCount) {
+                    cartCount.textContent = cart.length;
+                    cartCount.classList.remove('hidden');
+                }
+                if(cartTotal) cartTotal.textContent = cart.reduce((s, i) => s + i.price, 0) + " USD";
+                if(cartItems) cartItems.innerHTML = cart.map(i => `<div class="p-2 border-b border-white/10 flex justify-between"><span>${i.name}</span><span>$${i.price}</span></div>`).join('');
+            }
+        }
+
+        function setupScrollReveal() {
+            const obs = new IntersectionObserver(ents => ents.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); }), {threshold: 0.1});
+            document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+        }
+    </script>
+</body>
+</html>
