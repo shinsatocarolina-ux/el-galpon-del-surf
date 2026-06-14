@@ -19,7 +19,7 @@
             --coral: #e76f51;
             --teal: #2a9d8f;
         }
-31517-387662255_medium (1).mp4
+        
         * {
             margin: 0;
             padding: 0;
@@ -31,6 +31,15 @@
         }
 
         body {
+            <!-- Fondo de video -->
+<div class="fixed top-0 left-0 w-full h-full -z-10 overflow-hidden">
+    <video autoplay muted loop playsinline class="w-full h-full object-cover">
+        <source src="31517-387662255_medium.mp4" type="video/mp4">
+        Tu navegador no soporta videos HTML5.
+    </video>
+    <!-- Capa oscura para mejorar legibilidad del texto -->
+    <div class="absolute inset-0 bg-black/50"></div>
+</div>
             font-family: 'Inter', sans-serif;
             background: var(--bg-dark);
             color: var(--foam);
