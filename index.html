@@ -430,31 +430,40 @@
         async function loadProducts() {
             try {
                 boardsGrid.innerHTML = '<p class="text-center text-white/50 col-span-3 py-12">Cargando productos...</p>';
-                const res = await fetch(SHEET_URL);
+                const res = await fetch(SHEET_URL + '&t=' + Date.now());
                 const csv = await res.text();
                 const rows = csv.split('\n').slice(1);
                 surfboards = []; wetsuits = []; accessories = [];
+
                 rows.forEach((row, i) => {
-                    // Parseo CSV respetando campos entre comillas
-                    const cols = row.match(/(".*?"|[^,]+|(?<=,)(?=,)|^(?=,)|(?<=,)$)/g) || row.split(',');
+                    if (!row.trim()) return;
+                    // Parseo robusto que maneja campos entre comillas con comas adentro
+                    const cols = [];
+                    let cur = '', inQ = false;
+                    for (let c of row) {
+                        if (c === '"') { inQ = !inQ; }
+                        else if (c === ',' && !inQ) { cols.push(cur); cur = ''; }
+                        else { cur += c; }
+                    }
+                    cols.push(cur);
                     const clean = c => (c||'').replace(/^"|"$/g,'').trim();
                     const nombre     = clean(cols[0]);
-                    const categoria  = clean(cols[1]).toLowerCase();
+                    const categoria  = clean(cols[1]).toLowerCase().trim();
                     const precio     = parseInt(clean(cols[2]).replace(/\D/g,'')) || 0;
                     const descripcion= clean(cols[3]);
                     const medidas    = clean(cols[4]);
                     const fotoFrente = clean(cols[5]);
                     const fotoDorso  = clean(cols[6]);
-                    const activo     = clean(cols[7]).toLowerCase();
+                    const activo     = clean(cols[7]).toLowerCase().trim();
                     if (!nombre || activo === 'no') return;
                     const prod = { id: i+1, nombre, categoria, precio, descripcion, medidas, fotoFrente, fotoDorso };
-                    if (categoria === 'tabla')     surfboards.push(prod);
+                    if (categoria === 'tabla') surfboards.push(prod);
                     else if (categoria === 'traje') wetsuits.push(prod);
                     else if (categoria === 'accesorio') accessories.push(prod);
                 });
                 renderProducts();
             } catch(e) {
-                boardsGrid.innerHTML = '<p class="text-center text-red-400 col-span-3 py-12">Error cargando productos. Revisá la planilla.</p>';
+                boardsGrid.innerHTML = '<p class="text-center text-red-400 col-span-3 py-12">Error cargando productos.</p>';
                 console.error(e);
             }
         }
