@@ -19,7 +19,7 @@
             --coral: #e76f51;
             --teal: #2a9d8f;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
@@ -31,15 +31,6 @@
         }
 
         body {
-            <!-- Fondo de video -->
-<div class="fixed top-0 left-0 w-full h-full -z-10 overflow-hidden">
-    <video autoplay muted loop playsinline class="w-full h-full object-cover">
-        <source src="31517-387662255_medium.mp4" type="video/mp4">
-        Tu navegador no soporta videos HTML5.
-    </video>
-    <!-- Capa oscura para mejorar legibilidad del texto -->
-    <div class="absolute inset-0 bg-black/50"></div>
-</div>
             font-family: 'Inter', sans-serif;
             background: var(--bg-dark);
             color: var(--foam);
@@ -50,22 +41,23 @@
             font-family: 'Bebas Neue', sans-serif;
         }
 
-        /* ----- VIDEO DE FONDO CORREGIDO Y SEGURO ----- */
+        /* ----- VIDEO DE FONDO ----- */
         .video-bg-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -2; /* Lo tiramos bien al fondo para que no tape nada */
+            z-index: -2;
             overflow: hidden;
-            background: var(--bg-dark); /* Si el video falla, queda el fondo oscuro original */
+            background: var(--bg-dark);
         }
 
         .video-bg-container video {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            opacity: 0.55; /* el video se ve pero sin opacar el texto */
         }
 
         .video-overlay {
@@ -74,7 +66,14 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(10, 22, 40, 0.5); /* Capa sutil para que el texto sea legible */
+            /* Gradiente que oscurece arriba y abajo para que título y secciones sean legibles */
+            background: linear-gradient(
+                to bottom,
+                rgba(10, 22, 40, 0.7) 0%,
+                rgba(10, 22, 40, 0.35) 40%,
+                rgba(10, 22, 40, 0.35) 60%,
+                rgba(10, 22, 40, 0.75) 100%
+            );
         }
         /* ------------------------------------------- */
 
@@ -123,12 +122,21 @@
             background-clip: text;
         }
 
+        /* Fondo semitransparente para secciones sobre el video */
+        .section-bg {
+            background: rgba(10, 22, 40, 0.75);
+            backdrop-filter: blur(6px);
+            border-radius: 24px;
+            padding: 2rem;
+        }
+
         .product-card {
-            background: linear-gradient(145deg, rgba(18, 42, 74, 0.85), rgba(10, 22, 40, 0.95));
-            border: 1px solid rgba(0, 180, 216, 0.15);
+            background: linear-gradient(145deg, rgba(18, 42, 74, 0.92), rgba(10, 22, 40, 0.97));
+            border: 1px solid rgba(0, 180, 216, 0.2);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
             overflow: hidden;
+            backdrop-filter: blur(4px);
         }
 
         .product-card:hover {
@@ -268,7 +276,7 @@
     <!-- Contenedor del video de fondo -->
     <div class="video-bg-container">
         <video autoplay loop muted playsinline>
-            <source src="31517-387662255_medium.mp4" type="video/mp4">
+            <source src="https://raw.githubusercontent.com/shinsatocarolina-ux/el-galpon-del-surf/main/31517-387662255_medium%20(1).mp4" type="video/mp4">
         </video>
         <div class="video-overlay"></div>
     </div>
@@ -331,6 +339,7 @@
 
     <section class="py-20 relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="section-bg mb-2">
             <div class="grid md:grid-cols-3 gap-8">
                 <div class="reveal p-8 rounded-2xl bg-[#122a4a]/50 border border-[#00b4d8]/20 text-center">
                     <h3 class="font-display text-2xl mb-3">Envíos a todo el país</h3>
@@ -345,44 +354,53 @@
                     <p class="text-[#e8f4f8]/70">Te asesoramos de forma personalizada para elegir tu tabla ideal.</p>
                 </div>
             </div>
+            </div>
         </div>
     </section>
 
     <section id="tablas" class="py-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="section-bg">
             <div class="text-center mb-16 reveal">
                 <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl mb-4">TABLAS DE SURF</h2>
             </div>
             <div id="boardsGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+            </div>
         </div>
     </section>
 
     <section id="trajes" class="py-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="section-bg">
             <div class="text-center mb-16 reveal">
                 <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl mb-4">TRAJES DE NEOPRENO</h2>
             </div>
             <div id="wetsuitsGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+            </div>
         </div>
     </section>
 
     <section id="accesorios" class="py-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="section-bg">
             <div class="text-center mb-16 reveal">
                 <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl mb-4">ACCESORIOS</h2>
             </div>
             <div id="accessoriesGrid" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+            </div>
         </div>
     </section>
 
     <section id="contacto" class="py-20 text-center">
         <div class="max-w-3xl mx-auto px-4">
+            <div class="section-bg">
             <h2 class="font-display text-4xl mb-6">¿TENÉS DUDAS?</h2>
             <p class="mb-8 text-[#e8f4f8]/70">Hacé clic abajo para hablar directamente con nosotros por WhatsApp. ¡Te responderemos al instante!</p>
             <a href="https://wa.me/5492257525899" target="_blank" class="btn-whatsapp text-lg px-8 py-4">
                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.4.011 12.017.011c3.205.001 6.216 1.25 8.481 3.52 2.265 2.27 3.507 5.289 3.504 8.494-.007 6.661-5.347 12-11.962 12-2.015-.001-4.003-.507-5.77-1.472L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.742.002-2.602-.101-5.05-1.937-6.89C17.506 2.124 15.04 1.105 12.01 1.105c-5.44 0-9.863 4.37-9.866 9.743-.001 1.902.501 3.757 1.454 5.378L2.594 21.5l5.053-1.346z"/></svg>
                 Chatear por WhatsApp
             </a>
+            </div>
         </div>
     </section>
 
