@@ -1,70 +1,186 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>El Galpón del Surf</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght=300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --color-ocean-dark: #0B2545;
-            --color-ocean-medium: #134074;
-            --color-ocean-light: #8DA9C4;
-            --color-ocean-bg: #EEF4F8;
-            --color-sand: #EEF4F8;
+            --bg-dark: #0a1628;
+            --bg-medium: #122a4a;
+            --ocean-deep: #0066b3;
+            --ocean-light: #00b4d8;
+            --foam: #e8f4f8;
+            --sand: #f4a261;
+            --coral: #e76f51;
+            --teal: #2a9d8f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--color-ocean-bg);
-            color: var(--color-ocean-dark);
+            background: var(--bg-dark);
+            color: var(--foam);
+            overflow-x: hidden;
         }
 
-        .bg-ocean-dark { background-color: var(--color-ocean-dark); }
-        .text-ocean-dark { color: var(--color-ocean-dark); }
-        .bg-ocean-medium { background-color: var(--color-ocean-medium); }
-        .text-ocean-light { color: var(--color-ocean-light); }
-        .bg-sand { background-color: var(--color-sand); }
+        .font-display {
+            font-family: 'Bebas Neue', sans-serif;
+        }
 
-        .video-container {
+        /* ----- VIDEO DE FONDO CORREGIDO Y SEGURO ----- */
+        .video-bg-container {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            height: 100%;
+            z-index: -2; /* Lo tiramos bien al fondo para que no tape nada */
+            overflow: hidden;
+            background: var(--bg-dark); /* Si el video falla, queda el fondo oscuro original */
+        }
+
+        .video-bg-container video {
+            width: 100%;
+            height: 100%;
             object-fit: cover;
-            z-index: -2;
         }
 
-        .overlay {
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 22, 40, 0.5); /* Capa sutil para que el texto sea legible */
+        }
+        /* ------------------------------------------- */
+
+        .bubbles {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(11, 37, 69, 0.5);
-            z-index: -1;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .nav-blur {
+            background: rgba(10, 22, 40, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 180, 216, 0.2);
+        }
+
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--ocean-light), var(--teal));
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after { width: 100%; }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, rgba(10, 22, 40, 0.4) 0%, rgba(12, 42, 74, 0.2) 100%);
+        }
+
+        .hero-title {
+            background: linear-gradient(135deg, var(--foam) 0%, var(--ocean-light) 50%, var(--teal) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .product-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: linear-gradient(145deg, rgba(18, 42, 74, 0.85), rgba(10, 22, 40, 0.95));
+            border: 1px solid rgba(0, 180, 216, 0.15);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
         }
 
         .product-card:hover {
-            transform: translateY(-5px) rotate(0.5deg);
-            box-shadow: 0 10px 20px rgba(11, 37, 69, 0.15);
+            transform: translateY(-10px) scale(1.02);
+            border-color: var(--ocean-light);
+            box-shadow: 0 20px 40px rgba(0, 180, 216, 0.2);
         }
 
-        .cart-sidebar {
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        .btn-primary {
+            background: linear-gradient(135deg, var(--ocean-light), var(--teal));
+            color: var(--bg-dark);
+            font-weight: 600;
+            padding: 14px 32px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 180, 216, 0.4);
+        }
+
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+            font-weight: 600;
+            padding: 14px 32px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-whatsapp:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--coral);
+            color: white;
+            font-size: 12px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .reveal {
             opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s ease-out;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .reveal.active {
@@ -72,267 +188,382 @@
             transform: translateY(0);
         }
 
-        .btn-primary {
-            background-color: var(--color-ocean-dark);
-            color: #fff;
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            max-width: 100vw;
+            height: 100vh;
+            background: linear-gradient(180deg, var(--bg-dark), var(--bg-medium));
+            border-left: 1px solid rgba(0, 180, 216, 0.2);
+            z-index: 1000;
+            transition: right 0.4s ease;
+        }
+
+        .cart-sidebar.open { right: 0; }
+
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            opacity: 0;
+            visibility: hidden;
+            z-index: 999;
             transition: all 0.3s ease;
         }
 
-        .btn-primary:hover {
-            background-color: var(--color-ocean-medium);
-            transform: scale(1.02);
+        .cart-overlay.open { opacity: 1; visibility: visible; }
+
+        .float-action { animation: float 3s ease-in-out infinite; }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            visibility: hidden;
+            z-index: 1100;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .modal-overlay.open { opacity: 1; visibility: visible; }
+        .modal-content {
+            background: linear-gradient(145deg, var(--bg-medium), var(--bg-dark));
+            border: 1px solid rgba(0, 180, 216, 0.3);
+            max-width: 600px;
+            width: 100%;
+            border-radius: 16px;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 180, 216, 0.25);
         }
     </style>
 </head>
-<body class="relative min-h-screen pb-20">
+<body>
 
-    <!-- Fondo de Video y Overlay -->
-    <video class="video-container" autoplay loop muted playsinline>
-        <source src="https://assets.mixkit.co/videos/preview/mixkit-surfer-riding-a-wave-under-a-beautiful-sunset-41604-large.mp4" type="video/mp4">
-    </video>
-    <div class="overlay"></div>
+    <!-- Contenedor del video de fondo -->
+    <div class="video-bg-container">
+        <video autoplay loop muted playsinline>
+            <source src="31517-387662255_medium.mp4" type="video/mp4">
+        </video>
+        <div class="video-overlay"></div>
+    </div>
 
-    <!-- Header / Navbar -->
-    <header class="bg-ocean-dark text-white p-4 sticky top-0 z-40 shadow-md backdrop-blur-md bg-opacity-90">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-black tracking-wider text-white">EL GALPÓN DEL SURF</h1>
-            <button id="cartBtn" class="relative bg-white text-ocean-dark font-bold px-4 py-2 rounded-full shadow hover:bg-opacity-90 transition flex items-center gap-2">
-                🛒 Carrito
-                <span id="cartCount" class="bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">0</span>
-            </button>
-        </div>
-    </header>
+    <div class="bubbles" id="bubbles"></div>
 
-    <!-- Main Content -->
-    <main class="container mx-auto px-4 py-8">
-        <!-- Sección Tablas de Surf -->
-        <section id="boards-section" class="mb-16 reveal">
-            <h2 class="text-3xl font-bold mb-6 text-white border-b-2 border-white pb-2 inline-block">Tablas de Surf</h2>
-            <div id="boards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Render dinámico aquí -->
+    <nav class="nav-blur fixed top-0 left-0 right-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 md:h-20">
+                <a href="#" class="flex items-center gap-3">
+                    <span class="font-display text-2xl md:text-3xl tracking-wider text-[#00b4d8]">EL GALPÓN DEL SURF</span>
+                </a>
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="#tablas" class="nav-link text-sm uppercase tracking-widest">Tablas</a>
+                    <a href="#trajes" class="nav-link text-sm uppercase tracking-widest">Trajes</a>
+                    <a href="#accesorios" class="nav-link text-sm uppercase tracking-widest">Accesorios</a>
+                    <a href="#contacto" class="nav-link text-sm uppercase tracking-widest">Contacto</a>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button id="cartBtn" class="relative p-2 hover:bg-white/10 rounded-lg">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                        <span id="cartCount" class="cart-badge hidden">0</span>
+                    </button>
+                </div>
             </div>
-        </section>
-
-        <!-- Sección Accesorios -->
-        <section id="accessories-section" class="reveal">
-            <h2 class="text-3xl font-bold mb-6 text-white border-b-2 border-white pb-2 inline-block">Accesorios esenciales</h2>
-            <div id="accessories-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Render dinámico aquí -->
-            </div>
-        </section>
-    </main>
-
-    <!-- Sidebar del Carrito (Optimizado para móviles con p-4 md:p-6) -->
-    <aside id="cartSidebar" class="cart-sidebar fixed top-0 right-0 h-full w-[400px] max-w-full bg-white shadow-2xl z-50 transform translate-x-full flex flex-col p-4 md:p-6 text-ocean-dark">
-        <div class="flex justify-between items-center border-b pb-4 mb-4">
-            <h3 class="text-xl font-bold">Tu Pedido</h3>
-            <button id="closeCartBtn" class="text-2xl font-bold hover:text-red-500 transition">&times;</button>
         </div>
-        <div id="cartItems" class="flex-1 overflow-y-auto space-y-4">
-            <!-- Items del carrito -->
-        </div>
-        <div class="border-t pt-4 mt-4 space-y-4">
-            <div class="flex justify-between text-lg font-bold">
-                <span>Total:</span>
-                <span id="cartTotal">$0</span>
+    </nav>
+
+    <section class="hero-gradient min-h-screen flex items-center relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="reveal">
+                    <h1 class="font-display hero-title text-5xl sm:text-6xl lg:text-8xl leading-none mb-6">
+                        EL GALPÓN DEL SURF
+                    </h1>
+                    <p class="text-lg sm:text-xl text-[#e8f4f8]/80 mb-8 max-w-lg">
+                        Tu tienda de confianza. Equipamiento profesional y las mejores clases para surfistas de todos los niveles.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#tablas" class="btn-primary">Ver Catálogo</a>
+                        <a href="https://wa.me/5492257525899" target="_blank" class="btn-whatsapp">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.4.011 12.017.011c3.205.001 6.216 1.25 8.481 3.52 2.265 2.27 3.507 5.289 3.504 8.494-.007 6.661-5.347 12-11.962 12-2.015-.001-4.003-.507-5.77-1.472L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.742.002-2.602-.101-5.05-1.937-6.89C17.506 2.124 15.04 1.105 12.01 1.105c-5.44 0-9.863 4.37-9.866 9.743-.001 1.902.501 3.757 1.454 5.378L2.594 21.5l5.053-1.346z"/></svg>
+                            Escribime por WhatsApp
+                        </a>
+                    </div>
+                </div>
+                <div class="relative reveal float-action">
+                    <svg class="w-full h-auto max-w-lg mx-auto" viewBox="0 0 400 500" fill="none">
+                        <ellipse cx="200" cy="250" rx="60" ry="200" fill="url(#boardGrad)" stroke="#00b4d8" stroke-width="2"/>
+                        <defs>
+                            <linearGradient id="boardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#122a4a"/><stop offset="100%" stop-color="#00b4d8"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
             </div>
-            <button class="w-full btn-primary py-3 rounded-xl font-bold shadow-lg">Iniciar Compra</button>
+        </div>
+    </section>
+
+    <section class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="reveal p-8 rounded-2xl bg-[#122a4a]/50 border border-[#00b4d8]/20 text-center">
+                    <h3 class="font-display text-2xl mb-3">Envíos a todo el país</h3>
+                    <p class="text-[#e8f4f8]/70">Recibí tu equipamiento vivas donde vivas, de forma rápida y segura.</p>
+                </div>
+                <div class="reveal p-8 rounded-2xl bg-[#122a4a]/50 border border-[#00b4d8]/20 text-center">
+                    <h3 class="font-display text-2xl mb-3">Clases Individuales y Grupales</h3>
+                    <p class="text-[#e8f4f8]/70">Aprendé o perfeccioná tu técnica con profesores experimentados.</p>
+                </div>
+                <div class="reveal p-8 rounded-2xl bg-[#122a4a]/50 border border-[#00b4d8]/20 text-center">
+                    <h3 class="font-display text-2xl mb-3">Soporte Experto</h3>
+                    <p class="text-[#e8f4f8]/70">Te asesoramos de forma personalizada para elegir tu tabla ideal.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="tablas" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl mb-4">TABLAS DE SURF</h2>
+            </div>
+            <div id="boardsGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+        </div>
+    </section>
+
+    <section id="trajes" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl mb-4">TRAJES DE NEOPRENO</h2>
+            </div>
+            <div id="wetsuitsGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+        </div>
+    </section>
+
+    <section id="accesorios" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl mb-4">ACCESORIOS</h2>
+            </div>
+            <div id="accessoriesGrid" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+        </div>
+    </section>
+
+    <section id="contacto" class="py-20 text-center">
+        <div class="max-w-3xl mx-auto px-4">
+            <h2 class="font-display text-4xl mb-6">¿TENÉS DUDAS?</h2>
+            <p class="mb-8 text-[#e8f4f8]/70">Hacé clic abajo para hablar directamente con nosotros por WhatsApp. ¡Te responderemos al instante!</p>
+            <a href="https://wa.me/5492257525899" target="_blank" class="btn-whatsapp text-lg px-8 py-4">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.4.011 12.017.011c3.205.001 6.216 1.25 8.481 3.52 2.265 2.27 3.507 5.289 3.504 8.494-.007 6.661-5.347 12-11.962 12-2.015-.001-4.003-.507-5.77-1.472L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.742.002-2.602-.101-5.05-1.937-6.89C17.506 2.124 15.04 1.105 12.01 1.105c-5.44 0-9.863 4.37-9.866 9.743-.001 1.902.501 3.757 1.454 5.378L2.594 21.5l5.053-1.346z"/></svg>
+                Chatear por WhatsApp
+            </a>
+        </div>
+    </section>
+
+    <div id="cartOverlay" class="cart-overlay"></div>
+    <aside id="cartSidebar" class="cart-sidebar flex flex-col justify-between p-6">
+        <div>
+            <h3 class="font-display text-2xl mb-6">Tu Carrito</h3>
+            <div id="cartItems"></div>
+        </div>
+        <div class="border-t border-[#00b4d8]/20 pt-4">
+            <div class="flex justify-between mb-4"><span class="text-[#e8f4f8]/70">Total</span><span id="cartTotal" class="font-display text-2xl text-[#f4a261]">0 USD</span></div>
+            <button id="checkoutBtn" class="btn-primary w-full justify-center">Finalizar Compra</button>
         </div>
     </aside>
 
-    <!-- Modal de Detalles (Optimizado con aria-label) -->
-    <div id="productModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-4">
-        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto relative p-6 flex flex-col md:flex-row gap-6 shadow-2xl">
-            <!-- Botón de cierre con accesibilidad para lectores de pantalla -->
-            <button id="closeModalBtn" aria-label="Cerrar modal" class="absolute top-4 right-4 text-3xl font-bold text-gray-500 hover:text-black transition z-10">&times;</button>
-            <div class="w-full md:w-1/2">
-                <img id="modalImg" src="" alt="" class="w-full h-64 object-cover rounded-xl shadow-inner">
-            </div>
-            <div class="w-full md:w-1/2 flex flex-col justify-between">
-                <div>
-                    <h3 id="modalTitle" class="text-2xl font-bold mb-2 text-ocean-dark"></h3>
-                    <p id="modalPrice" class="text-xl font-black text-ocean-medium mb-4"></p>
-                    <p id="modalDescription" class="text-gray-600 text-sm leading-relaxed mb-6"></p>
-                </div>
-                <div id="modalActionContainer">
-                    <!-- Botón dinámico generado según el contexto -->
-                </div>
-            </div>
+    <div id="productModal" class="modal-overlay">
+        <div class="modal-content p-6 md:p-8">
+            <button id="closeModalBtn" class="absolute top-4 right-4 text-white/70 hover:text-white p-2 text-xl font-bold">&times;</button>
+            <div id="modalBody"></div>
         </div>
     </div>
 
-    <!-- JavaScript -->
     <script>
-        // Datos de productos (Actualizados y unificados)
-        const boards = [
-            { id: 1, name: "Fish Retro 5'8", price: 450000, img: "https://images.unsplash.com/photo-1531722569936-825d3dd91b15?w=500&auto=format&fit=crop&q=60", desc: "Ideal para olas chicas y medianas. Perfecta flotabilidad, cantos clásicos y un diseño twin fin que garantiza velocidad y giros fluidos en la pared de la ola." },
-            { id: 2, name: "Shortboard Performance 6'1", price: 480000, img: "https://images.unsplash.com/photo-1502680390469-be75c86b636f?w=500&auto=format&fit=crop&q=60", desc: "Diseñada para surfistas intermedios y avanzados. Rocker pronunciado para maniobras críticas en olas rápidas y potentes." },
-            { id: 3, name: "Longboard Classic 9'2", price: 620000, img: "https://images.unsplash.com/photo-1473186578172-c141e6798cf4?w=500&auto=format&fit=crop&q=60", desc: "Estilo puro de la vieja escuela. Excelente para noseriding, caminatas estables y sesiones relajadas en días de olas suaves." }
+        const surfboards = [
+            { 
+                id: 1, 
+                name: "Tabla Evolutiva 7'0", 
+                price: 350, 
+                imageFrente: "https://i.postimg.cc/9FTjyCp8/1781293953655.png",
+                imageDorso: "https://i.postimg.cc/3wqLLDrn/Whats-App-Image-2026-06-13-at-22-13-41-1.jpg", 
+                description: "Ideal para tus primeras olas y progresión rápida.", 
+                specs: "7'0 x 22 x 3" 
+            },
+            { 
+                id: 2, 
+                name: "Shortboard Performance", 
+                price: 420, 
+                imageFrente: "https://via.placeholder.com/300?text=FRENTE+TABLA+2", 
+                imageDorso: "https://via.placeholder.com/300?text=DORSO+TABLA+2",   
+                description: "Para surfistas intermedios que buscan maniobras.", 
+                specs: "6'1 x 19.5 x 2.4" 
+            }
+        ];
+
+        const wetsuits = [
+            { id: 3, name: "Traje Neoprene 4/3mm", price: 180, description: "Costuras termoselladas para máxima protección del frío." },
+            { id: 4, name: "Traje Neoprene 3/2mm", price: 150, description: "Súper elástico, ideal para temporadas de primavera/verano." }
         ];
 
         const accessories = [
-            { id: 101, name: "Leash Comp 6ft", price: 28000, img: "https://images.unsplash.com/photo-1596838132731-3301c3fd4317?w=500&auto=format&fit=crop&q=60", desc: "Cuerda de uretano de alta resistencia de 7mm. Doble quitavueltas de acero inoxidable para evitar enredos molestos." },
-            { id: 102, name: "Grip de Tracción", price: 35000, img: "https://images.unsplash.com/photo-1565992441121-4367c2967103?w=500&auto=format&fit=crop&q=60", desc: "Grip de EVA ultraligero con arco central de 5mm y kicktail de 30mm. Adhesivo 3M garantizado de por vida." },
-            { id: 103, name: "Parafina Cold Water", price: 4500, img: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=500&auto=format&fit=crop&q=60", desc: "Fórmula orgánica premium para aguas frías (10-15°C). Agarre óptimo de larga duración sin desprenderse." },
-            { id: 104, name: "Funda Protectora 6'3", price: 75000, img: "https://images.unsplash.com/photo-1542628682-88362445e783?w=500&auto=format&fit=crop&q=60", desc: "Acolchado de alta densidad de 5mm con lona reflectante de calor. Protección total contra golpes cotidianos y rayos UV." }
+            { id: 5, name: "Leash / Invento 6'", price: 25, icon: "leash" },
+            { id: 6, name: "Parafina / Wax", price: 5, icon: "wax" }
         ];
 
         let cart = [];
+        
+        const boardsGrid = document.getElementById('boardsGrid');
+        const wetsuitsGrid = document.getElementById('wetsuitsGrid');
+        const accessoriesGrid = document.getElementById('accessoriesGrid');
+        const cartSidebar = document.getElementById('cartSidebar');
+        const cartOverlay = document.getElementById('cartOverlay');
+        const cartItems = document.getElementById('cartItems');
+        const cartTotal = document.getElementById('cartTotal');
+        const cartCount = document.getElementById('cartCount');
+        const productModal = document.getElementById('productModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const modalBody = document.getElementById('modalBody');
 
-        // Inicialización y Renderizado
-        document.addEventListener("DOMContentLoaded", () => {
+        document.addEventListener('DOMContentLoaded', () => {
             renderProducts();
-            setupEventListeners();
             setupScrollReveal();
+            
+            document.getElementById('cartBtn').addEventListener('click', () => { 
+                cartSidebar.classList.add('open'); 
+                cartOverlay.classList.add('open'); 
+            });
+            cartOverlay.addEventListener('click', () => { 
+                cartSidebar.classList.remove('open'); 
+                cartOverlay.classList.remove('open'); 
+            });
+            
+            closeModalBtn.addEventListener('click', closeModal);
+            productModal.addEventListener('click', (e) => { 
+                if(e.target === productModal) closeModal(); 
+            });
         });
 
-        // Modificado para limpiar la propagación del click usando event.stopPropagation() explícito inline
         function renderProducts() {
-            const boardsContainer = document.getElementById("boards-container");
-            boardsContainer.innerHTML = boards.map(b => `
-                <div class="bg-white rounded-2xl overflow-hidden product-card shadow-md cursor-pointer relative" onclick="openModal(${b.id}, 'board')">
-                    <img src="${b.img}" alt="${b.name}" class="w-full h-56 object-cover">
-                    <div class="p-5">
-                        <h3 class="text-xl font-bold mb-2 text-ocean-dark">${b.name}</h3>
-                        <p class="text-gray-600 text-sm mb-4 line-clamp-2">${b.desc}</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-lg font-black text-ocean-medium">$${b.price.toLocaleString('es-AR')}</span>
-                            <button onclick="event.stopPropagation(); addToCart(${b.id}, 'board')" class="btn-primary py-1 px-3 text-sm relative z-10 rounded-lg font-semibold shadow">Agregar</button>
+            if(boardsGrid) {
+                boardsGrid.innerHTML = surfboards.map(b => `
+                    <div class="product-card rounded-2xl p-6 group cursor-pointer" onclick="openModal(${b.id}, 'board', event)">
+                        <div class="relative w-full h-64 overflow-hidden rounded-xl mb-4 bg-slate-900">
+                            <img src="${b.imageFrente}" class="absolute inset-0 w-full h-full object-contain transition-opacity duration-500 group-hover:opacity-0" alt="${b.name} Frente">
+                            <img src="${b.imageDorso}" class="absolute inset-0 w-full h-full object-contain opacity-0 transition-opacity duration-500 group-hover:opacity-100" alt="${b.name} Dorso">
+                        </div>
+                        <h3 class="font-display text-xl mb-2">${b.name}</h3>
+                        <p class="text-sm opacity-70 mb-1">${b.description}</p>
+                        <p class="text-xs text-[#00b4d8] font-semibold mb-2">Medidas: ${b.specs}</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-[#f4a261] font-display text-xl">$${b.price}</span>
+                            <button onclick="addToCart(${b.id}, 'board', event)" class="btn-primary py-1 px-3 text-sm relative z-10">Agregar</button>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `).join('');
+            }
 
-            const accContainer = document.getElementById("accessories-container");
-            accContainer.innerHTML = accessories.map(a => `
-                <div class="bg-white rounded-2xl overflow-hidden product-card shadow-md cursor-pointer relative" onclick="openModal(${a.id}, 'accessory')">
-                    <img src="${a.img}" alt="${a.name}" class="w-full h-40 object-cover">
-                    <div class="p-4">
-                        <h3 class="font-bold text-base mb-1 text-ocean-dark truncate">${a.name}</h3>
-                        <div class="flex justify-between items-center mt-3">
-                            <span class="text-base font-black text-ocean-medium">$${a.price.toLocaleString('es-AR')}</span>
-                            <button onclick="event.stopPropagation(); addToCart(${a.id}, 'accessory')" class="btn-primary py-1 px-2.5 text-xs relative z-10 rounded-md font-semibold shadow">Agregar</button>
+            if(wetsuitsGrid) {
+                wetsuitsGrid.innerHTML = wetsuits.map(w => `
+                    <div class="product-card rounded-2xl p-6 cursor-pointer" onclick="openModal(${w.id}, 'wetsuit', event)">
+                        <h3 class="font-display text-xl mb-2">${w.name}</h3>
+                        <p class="text-sm opacity-70 mb-2">${w.description}</p>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-[#f4a261] font-display text-xl">$${w.price}</span>
+                            <button onclick="addToCart(${w.id}, 'wetsuit', event)" class="btn-primary py-1 px-3 text-sm relative z-10">Agregar</button>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `).join('');
+            }
+
+            if(accessoriesGrid) {
+                accessoriesGrid.innerHTML = accessories.map(a => `
+                    <div class="product-card rounded-xl p-6 cursor-pointer" onclick="openModal(${a.id}, 'accessory', event)">
+                        <h3 class="font-medium mb-1">${a.name}</h3>
+                        <div class="flex justify-between items-center mt-4">
+                            <span class="text-[#f4a261] font-display text-lg">$${a.price}</span>
+                            <button onclick="addToCart(${a.id}, 'accessory', event)" class="btn-primary py-1 px-2 text-sm relative z-10"> + </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
         }
 
-        // Eventos Globales de Interfaz
-        function setupEventListeners() {
-            const cartBtn = document.getElementById("cartBtn");
-            const closeCartBtn = document.getElementById("closeCartBtn");
-            const cartSidebar = document.getElementById("cartSidebar");
-            const productModal = document.getElementById("productModal");
-            const closeModalBtn = document.getElementById("closeModalBtn");
+        function openModal(id, type, event) {
+            let item = [...surfboards, ...wetsuits, ...accessories].find(p => p.id === id);
+            if(!item) return;
 
-            cartBtn.addEventListener("click", () => cartSidebar.classList.remove("translate-x-full"));
-            closeCartBtn.addEventListener("click", () => cartSidebar.classList.add("translate-x-full"));
-            
-            closeModalBtn.addEventListener("click", closeModal);
-            productModal.addEventListener("click", (e) => {
-                if(e.target === productModal) closeModal();
-            });
-        }
+            let extraContent = '';
+            if(type === 'board') {
+                extraContent = `
+                    <div class="grid grid-cols-2 gap-4 my-4 bg-slate-900/60 p-4 rounded-xl">
+                        <div>
+                            <p class="text-xs opacity-50 mb-1">Vista Frente</p>
+                            <img src="${item.imageFrente}" class="w-full h-48 object-contain" alt="Frente">
+                        </div>
+                        <div>
+                            <p class="text-xs opacity-50 mb-1">Vista Dorso</p>
+                            <img src="${item.imageDorso}" class="w-full h-48 object-contain" alt="Dorso">
+                        </div>
+                    </div>
+                    <p class="text-sm text-[#00b4d8] font-semibold mb-4">Medidas Técnicas: ${item.specs}</p>
+                `;
+            }
 
-        // Lógica de Scroll con Intersection Observer
-        function setupScrollReveal() {
-            const observers = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if(entry.isIntersecting) {
-                        entry.target.classList.add("active");
-                    }
-                });
-            }, { threshold: 0.1 });
+            if(modalBody) {
+                modalBody.innerHTML = `
+                    <h3 class="font-display text-3xl mb-2 text-[#00b4d8]">${item.name}</h3>
+                    <p class="text-[#e8f4f8]/80 text-base mb-4">${item.description || 'Sin descripción adicional disponible.'}</p>
+                    ${extraContent}
+                    <div class="flex justify-between items-center pt-4 border-t border-[#00b4d8]/20 mt-4">
+                        <span class="text-[#f4a261] font-display text-3xl">$${item.price} USD</span>
+                        <button onclick="addToCart(${item.id}, '${type}', event); closeModal();" class="btn-primary">Añadir al carrito</button>
+                    </div>
+                `;
+            }
 
-            document.querySelectorAll(".reveal").forEach(el => observers.observe(el));
-        }
-
-        // Gestión de Ventana Modal
-        function openModal(id, type) {
-            const product = type === 'board' ? boards.find(b => b.id === id) : accessories.find(a => a.id === id);
-            if(!product) return;
-
-            document.getElementById("modalImg").src = product.img;
-            document.getElementById("modalImg").alt = product.name;
-            document.getElementById("modalTitle").innerText = product.name;
-            document.getElementById("modalPrice").innerText = `$${product.price.toLocaleString('es-AR')}`;
-            document.getElementById("modalDescription").innerText = product.desc;
-
-            // Inserción limpia del botón de acción en el modal
-            document.getElementById("modalActionContainer").innerHTML = `
-                <button onclick="addToCart(${product.id}, '${type}'); closeModal();" class="w-full btn-primary py-3 rounded-xl font-bold shadow-md">
-                    Añadir al Carrito
-                </button>
-            `;
-
-            const modal = document.getElementById("productModal");
-            modal.classList.remove("opacity-0", "pointer-events-none");
+            if(productModal) productModal.classList.add('open');
         }
 
         function closeModal() {
-            const modal = document.getElementById("productModal");
-            modal.classList.add("opacity-0", "pointer-events-none");
+            if(productModal) productModal.classList.remove('open');
         }
 
-        // Lógica del Carrito de Compras
-        function addToCart(id, type) {
-            const list = type === 'board' ? boards : accessories;
-            const item = list.find(p => p.id === id);
-            
-            const existing = cart.find(c => c.id === id);
-            if(existing) {
-                existing.quantity += 1;
-            } else {
-                cart.push({ ...item, quantity: 1 });
+        function addToCart(id, type, event) {
+            if(event) event.stopPropagation(); 
+            let item = [...surfboards, ...wetsuits, ...accessories].find(p => p.id === id);
+            if(item) {
+                cart.push(item);
+                if(cartCount) {
+                    cartCount.textContent = cart.length;
+                    cartCount.classList.remove('hidden');
+                }
+                if(cartTotal) cartTotal.textContent = cart.reduce((s, i) => s + i.price, 0) + " USD";
+                if(cartItems) cartItems.innerHTML = cart.map(i => `<div class="p-2 border-b border-white/10 flex justify-between"><span>${i.name}</span><span>$${i.price}</span></div>`).join('');
             }
-            updateCartUI();
         }
 
-        function changeQuantity(id, amount) {
-            const item = cart.find(c => c.id === id);
-            if(!item) return;
-
-            item.quantity += amount;
-            if(item.quantity <= 0) {
-                cart = cart.filter(c => c.id !== id);
-            }
-            updateCartUI();
-        }
-
-        function updateCartUI() {
-            const cartItems = document.getElementById("cartItems");
-            const cartCount = document.getElementById("cartCount");
-            const cartTotal = document.getElementById("cartTotal");
-
-            const totalCount = cart.reduce((acc, current) => acc + current.quantity, 0);
-            const totalPrice = cart.reduce((acc, current) => acc + (current.price * current.quantity), 0);
-
-            cartCount.innerText = totalCount;
-            cartTotal.innerText = `$${totalPrice.toLocaleString('es-AR')}`;
-
-            if(cart.length === 0) {
-                cartItems.innerHTML = `<p class="text-gray-400 text-center py-8">Tu carrito está vacío.</p>`;
-                return;
-            }
-
-            cartItems.innerHTML = cart.map(c => `
-                <div class="flex items-center gap-4 bg-gray-50 p-3 rounded-xl border border-gray-100">
-                    <img src="${c.img}" alt="${c.name}" class="w-16 h-16 object-cover rounded-lg">
-                    <div class="flex-1 min-w-0">
-                        <h4 class="font-bold text-sm truncate">${c.name}</h4>
-                        <p class="text-xs text-gray-500 font-semibold mt-0.5">$${c.price.toLocaleString('es-AR')}</p>
-                    </div>
-                    <div class="flex items-center gap-2 bg-white border rounded-lg px-2 py-1">
-                        <button onclick="changeQuantity(${c.id}, -1)" class="font-bold text-gray-500 hover:text-black px-1">-</button>
-                        <span class="text-sm font-bold w-4 text-center">${c.quantity}</span>
-                        <button onclick="changeQuantity(${c.id}, 1)" class="font-bold text-gray-500 hover:text-black px-1">+</button>
-                    </div>
-                </div>
-            `).join('');
+        function setupScrollReveal() {
+            const obs = new IntersectionObserver(ents => ents.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); }), {threshold: 0.1});
+            document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
         }
     </script>
 </body>
 </html>
-
-```
