@@ -415,38 +415,49 @@
     </div>
 
     <script>
-        const surfboards = [
-            { 
-                id: 1, 
-                name: "Tabla Evolutiva 7'0", 
-                price: 350, 
-                imageFrente: "https://i.postimg.cc/9FTjyCp8/1781293953655.png",
-                imageDorso: "https://i.postimg.cc/3wqLLDrn/Whats-App-Image-2026-06-13-at-22-13-41-1.jpg", 
-                description: "Ideal para tus primeras olas y progresión rápida.", 
-                specs: "7'0 x 22 x 3" 
-            },
-            { 
-                id: 2, 
-                name: "Shortboard Performance", 
-                price: 420, 
-                imageFrente: "https://via.placeholder.com/300?text=FRENTE+TABLA+2", 
-                imageDorso: "https://via.placeholder.com/300?text=DORSO+TABLA+2",   
-                description: "Para surfistas intermedios que buscan maniobras.", 
-                specs: "6'1 x 19.5 x 2.4" 
-            }
-        ];
+        // ═══════════════════════════════════════════════════════════════
+        // PRODUCTOS — Se cargan automáticamente desde Google Sheets
+        // Para agregar productos: abrí la planilla y agregá una fila
+        // Columnas: Nombre | Categoria | Precio | Descripcion | Medidas | Foto Frente | Foto Dorso | Activo
+        // ═══════════════════════════════════════════════════════════════
+        const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRqSUPtDNZ0a3fufDdGCEMXewp2dj3mHc7g3_aypNDjWlb-iTJnfVuCDHy733gMNsQFlJPB6wcLq_tg/pub?gid=0&single=true&output=csv';
 
-        const wetsuits = [
-            { id: 3, name: "Traje Neoprene 4/3mm", price: 180, description: "Costuras termoselladas para máxima protección del frío." },
-            { id: 4, name: "Traje Neoprene 3/2mm", price: 150, description: "Súper elástico, ideal para temporadas de primavera/verano." }
-        ];
-
-        const accessories = [
-            { id: 5, name: "Leash / Invento 6'", price: 25, icon: "leash" },
-            { id: 6, name: "Parafina / Wax", price: 5, icon: "wax" }
-        ];
-
+        let surfboards = [];
+        let wetsuits = [];
+        let accessories = [];
         let cart = [];
+
+        async function loadProducts() {
+            try {
+                boardsGrid.innerHTML = '<p class="text-center text-white/50 col-span-3 py-12">Cargando productos...</p>';
+                const res = await fetch(SHEET_URL);
+                const csv = await res.text();
+                const rows = csv.split('\n').slice(1);
+                surfboards = []; wetsuits = []; accessories = [];
+                rows.forEach((row, i) => {
+                    // Parseo CSV respetando campos entre comillas
+                    const cols = row.match(/(".*?"|[^,]+|(?<=,)(?=,)|^(?=,)|(?<=,)$)/g) || row.split(',');
+                    const clean = c => (c||'').replace(/^"|"$/g,'').trim();
+                    const nombre     = clean(cols[0]);
+                    const categoria  = clean(cols[1]).toLowerCase();
+                    const precio     = parseInt(clean(cols[2]).replace(/\D/g,'')) || 0;
+                    const descripcion= clean(cols[3]);
+                    const medidas    = clean(cols[4]);
+                    const fotoFrente = clean(cols[5]);
+                    const fotoDorso  = clean(cols[6]);
+                    const activo     = clean(cols[7]).toLowerCase();
+                    if (!nombre || activo === 'no') return;
+                    const prod = { id: i+1, nombre, categoria, precio, descripcion, medidas, fotoFrente, fotoDorso };
+                    if (categoria === 'tabla')     surfboards.push(prod);
+                    else if (categoria === 'traje') wetsuits.push(prod);
+                    else if (categoria === 'accesorio') accessories.push(prod);
+                });
+                renderProducts();
+            } catch(e) {
+                boardsGrid.innerHTML = '<p class="text-center text-red-400 col-span-3 py-12">Error cargando productos. Revisá la planilla.</p>';
+                console.error(e);
+            }
+        }
         
         const boardsGrid = document.getElementById('boardsGrid');
         const wetsuitsGrid = document.getElementById('wetsuitsGrid');
@@ -461,7 +472,7 @@
         const modalBody = document.getElementById('modalBody');
 
         document.addEventListener('DOMContentLoaded', () => {
-            renderProducts();
+            loadProducts();
             setupScrollReveal();
             
             document.getElementById('cartBtn').addEventListener('click', () => { 
@@ -481,51 +492,67 @@
 
         function renderProducts() {
             if(boardsGrid) {
-                boardsGrid.innerHTML = surfboards.map(b => `
-                    <div class="product-card rounded-2xl p-6 group cursor-pointer" onclick="openModal(${b.id}, 'board', event)">
-                        <div class="relative w-full h-64 overflow-hidden rounded-xl mb-4 bg-slate-900">
-                            <img src="${b.imageFrente}" class="absolute inset-0 w-full h-full object-contain transition-opacity duration-500 group-hover:opacity-0" alt="${b.name} Frente">
-                            <img src="${b.imageDorso}" class="absolute inset-0 w-full h-full object-contain opacity-0 transition-opacity duration-500 group-hover:opacity-100" alt="${b.name} Dorso">
+                if(surfboards.length === 0) {
+                    boardsGrid.innerHTML = '<p class="text-center text-white/50 col-span-3 py-12">No hay tablas cargadas todavía. Agregá productos en la planilla.</p>';
+                } else {
+                    boardsGrid.innerHTML = surfboards.map(b => `
+                        <div class="product-card rounded-2xl p-6 group cursor-pointer" onclick="openModal(${b.id}, 'board', event)">
+                            <div class="relative w-full h-64 overflow-hidden rounded-xl mb-4 bg-slate-900">
+                                <img src="${b.fotoFrente || 'https://via.placeholder.com/300x400/122a4a/00b4d8?text=FRENTE'}" class="absolute inset-0 w-full h-full object-contain transition-opacity duration-500 group-hover:opacity-0" alt="${b.nombre} Frente">
+                                <img src="${b.fotoDorso || 'https://via.placeholder.com/300x400/122a4a/00b4d8?text=DORSO'}" class="absolute inset-0 w-full h-full object-contain opacity-0 transition-opacity duration-500 group-hover:opacity-100" alt="${b.nombre} Dorso">
+                                <span class="absolute top-2 left-2 text-xs bg-[#00b4d8]/20 text-[#00b4d8] border border-[#00b4d8]/40 px-2 py-1 rounded-full">Pasá el mouse para ver dorso</span>
+                            </div>
+                            <h3 class="font-display text-xl mb-2">${b.nombre}</h3>
+                            <p class="text-sm opacity-70 mb-1">${b.descripcion}</p>
+                            <p class="text-xs text-[#00b4d8] font-semibold mb-2">Medidas: ${b.medidas}</p>
+                            <div class="flex justify-between items-center mt-4">
+                                <span class="text-[#f4a261] font-display text-xl">$${b.precio.toLocaleString('es-AR')}</span>
+                                <button onclick="addToCart(${b.id}, 'board', event)" class="btn-primary py-1 px-3 text-sm relative z-10">Agregar</button>
+                            </div>
                         </div>
-                        <h3 class="font-display text-xl mb-2">${b.name}</h3>
-                        <p class="text-sm opacity-70 mb-1">${b.description}</p>
-                        <p class="text-xs text-[#00b4d8] font-semibold mb-2">Medidas: ${b.specs}</p>
-                        <div class="flex justify-between items-center mt-4">
-                            <span class="text-[#f4a261] font-display text-xl">$${b.price}</span>
-                            <button onclick="addToCart(${b.id}, 'board', event)" class="btn-primary py-1 px-3 text-sm relative z-10">Agregar</button>
-                        </div>
-                    </div>
-                `).join('');
+                    `).join('');
+                }
             }
 
             if(wetsuitsGrid) {
-                wetsuitsGrid.innerHTML = wetsuits.map(w => `
-                    <div class="product-card rounded-2xl p-6 cursor-pointer" onclick="openModal(${w.id}, 'wetsuit', event)">
-                        <h3 class="font-display text-xl mb-2">${w.name}</h3>
-                        <p class="text-sm opacity-70 mb-2">${w.description}</p>
-                        <div class="flex justify-between items-center mt-4">
-                            <span class="text-[#f4a261] font-display text-xl">$${w.price}</span>
-                            <button onclick="addToCart(${w.id}, 'wetsuit', event)" class="btn-primary py-1 px-3 text-sm relative z-10">Agregar</button>
+                if(wetsuits.length === 0) {
+                    wetsuitsGrid.innerHTML = '<p class="text-center text-white/50 col-span-3 py-12">No hay trajes cargados todavía.</p>';
+                } else {
+                    wetsuitsGrid.innerHTML = wetsuits.map(w => `
+                        <div class="product-card rounded-2xl p-6 cursor-pointer" onclick="openModal(${w.id}, 'wetsuit', event)">
+                            <h3 class="font-display text-xl mb-2">${w.nombre}</h3>
+                            <p class="text-sm opacity-70 mb-2">${w.descripcion}</p>
+                            ${w.medidas ? `<p class="text-xs text-[#00b4d8] mb-2">${w.medidas}</p>` : ''}
+                            <div class="flex justify-between items-center mt-4">
+                                <span class="text-[#f4a261] font-display text-xl">$${w.precio.toLocaleString('es-AR')}</span>
+                                <button onclick="addToCart(${w.id}, 'wetsuit', event)" class="btn-primary py-1 px-3 text-sm relative z-10">Agregar</button>
+                            </div>
                         </div>
-                    </div>
-                `).join('');
+                    `).join('');
+                }
             }
 
             if(accessoriesGrid) {
-                accessoriesGrid.innerHTML = accessories.map(a => `
-                    <div class="product-card rounded-xl p-6 cursor-pointer" onclick="openModal(${a.id}, 'accessory', event)">
-                        <h3 class="font-medium mb-1">${a.name}</h3>
-                        <div class="flex justify-between items-center mt-4">
-                            <span class="text-[#f4a261] font-display text-lg">$${a.price}</span>
-                            <button onclick="addToCart(${a.id}, 'accessory', event)" class="btn-primary py-1 px-2 text-sm relative z-10"> + </button>
+                if(accessories.length === 0) {
+                    accessoriesGrid.innerHTML = '<p class="text-center text-white/50 col-span-4 py-12">No hay accesorios cargados todavía.</p>';
+                } else {
+                    accessoriesGrid.innerHTML = accessories.map(a => `
+                        <div class="product-card rounded-xl p-6 cursor-pointer" onclick="openModal(${a.id}, 'accessory', event)">
+                            <h3 class="font-medium mb-1">${a.nombre}</h3>
+                            <p class="text-xs opacity-60 mb-2">${a.descripcion}</p>
+                            <div class="flex justify-between items-center mt-4">
+                                <span class="text-[#f4a261] font-display text-lg">$${a.precio.toLocaleString('es-AR')}</span>
+                                <button onclick="addToCart(${a.id}, 'accessory', event)" class="btn-primary py-1 px-2 text-sm relative z-10"> + </button>
+                            </div>
                         </div>
-                    </div>
-                `).join('');
+                    `).join('');
+                }
             }
         }
 
         function openModal(id, type, event) {
-            let item = [...surfboards, ...wetsuits, ...accessories].find(p => p.id === id);
+            const all = [...surfboards, ...wetsuits, ...accessories];
+            let item = all.find(p => p.id === id);
             if(!item) return;
 
             let extraContent = '';
@@ -534,29 +561,28 @@
                     <div class="grid grid-cols-2 gap-4 my-4 bg-slate-900/60 p-4 rounded-xl">
                         <div>
                             <p class="text-xs opacity-50 mb-1">Vista Frente</p>
-                            <img src="${item.imageFrente}" class="w-full h-48 object-contain" alt="Frente">
+                            <img src="${item.fotoFrente || 'https://via.placeholder.com/300x400/122a4a/00b4d8?text=FRENTE'}" class="w-full h-48 object-contain" alt="Frente">
                         </div>
                         <div>
                             <p class="text-xs opacity-50 mb-1">Vista Dorso</p>
-                            <img src="${item.imageDorso}" class="w-full h-48 object-contain" alt="Dorso">
+                            <img src="${item.fotoDorso || 'https://via.placeholder.com/300x400/122a4a/00b4d8?text=DORSO'}" class="w-full h-48 object-contain" alt="Dorso">
                         </div>
                     </div>
-                    <p class="text-sm text-[#00b4d8] font-semibold mb-4">Medidas Técnicas: ${item.specs}</p>
+                    <p class="text-sm text-[#00b4d8] font-semibold mb-4">Medidas: ${item.medidas}</p>
                 `;
             }
 
             if(modalBody) {
                 modalBody.innerHTML = `
-                    <h3 class="font-display text-3xl mb-2 text-[#00b4d8]">${item.name}</h3>
-                    <p class="text-[#e8f4f8]/80 text-base mb-4">${item.description || 'Sin descripción adicional disponible.'}</p>
+                    <h3 class="font-display text-3xl mb-2 text-[#00b4d8]">${item.nombre}</h3>
+                    <p class="text-[#e8f4f8]/80 text-base mb-4">${item.descripcion || ''}</p>
                     ${extraContent}
                     <div class="flex justify-between items-center pt-4 border-t border-[#00b4d8]/20 mt-4">
-                        <span class="text-[#f4a261] font-display text-3xl">$${item.price} USD</span>
+                        <span class="text-[#f4a261] font-display text-3xl">$${item.precio.toLocaleString('es-AR')}</span>
                         <button onclick="addToCart(${item.id}, '${type}', event); closeModal();" class="btn-primary">Añadir al carrito</button>
                     </div>
                 `;
             }
-
             if(productModal) productModal.classList.add('open');
         }
 
@@ -565,16 +591,19 @@
         }
 
         function addToCart(id, type, event) {
-            if(event) event.stopPropagation(); 
-            let item = [...surfboards, ...wetsuits, ...accessories].find(p => p.id === id);
+            if(event) event.stopPropagation();
+            const all = [...surfboards, ...wetsuits, ...accessories];
+            let item = all.find(p => p.id === id);
             if(item) {
                 cart.push(item);
-                if(cartCount) {
-                    cartCount.textContent = cart.length;
-                    cartCount.classList.remove('hidden');
-                }
-                if(cartTotal) cartTotal.textContent = cart.reduce((s, i) => s + i.price, 0) + " USD";
-                if(cartItems) cartItems.innerHTML = cart.map(i => `<div class="p-2 border-b border-white/10 flex justify-between"><span>${i.name}</span><span>$${i.price}</span></div>`).join('');
+                if(cartCount) { cartCount.textContent = cart.length; cartCount.classList.remove('hidden'); }
+                const total = cart.reduce((s, i) => s + i.precio, 0);
+                if(cartTotal) cartTotal.textContent = '$' + total.toLocaleString('es-AR');
+                if(cartItems) cartItems.innerHTML = cart.map(i => `
+                    <div class="p-2 border-b border-white/10 flex justify-between">
+                        <span class="text-sm">${i.nombre}</span>
+                        <span class="text-[#f4a261] text-sm">$${i.precio.toLocaleString('es-AR')}</span>
+                    </div>`).join('');
             }
         }
 
